@@ -13,26 +13,41 @@ app.engine("html", mustacheExpress())
   app.set('views', __dirname + '/views');
   app.use(express.static(__dirname + '/public'));
 
+//POKEMON
 app.get('/', function (req, res) {
-  // enregister le nom du pokemon dans une variable
-  // Envoyer une requête à l'api PokeAPI pour récupérer les infos du pokemon envoyé en param_tre
-  // Renvoyer les informations du pokemon en paramètre au client
-  // declare la variable qui contient le nom de pokemon passé en parametre de requete
   let pokemonChosen = req.query.pokemonName;
 
-  // methode appel axios
   axios.get('https://pokeapi.co/api/v2/pokemon/' + pokemonChosen)
     .then((response) =>{
       // handle success
-      //console.log(response.data);
       let pokemonData = response.data;
-      res.json(pokemonData);
+      // res.json(pokemonData);
+      return pokemonData;
     })
     .catch((error) => {
       // handle error
       console.log(error);
     })
+    // recuperer HP
+    .then((pokemonData)=>{
+      let pokemonName = pokemonData.name
+      let pokemonHP = pokemonData.stats[5].base_stat
+      let pokemonATK = pokemonData.stats[4].base_stat
+
+      res.json(pokemonATK);
+    })
+
+
+
+
 })
+
+
+
+
+
+
+
 
 app.get('/calendar', (req, res) => {
   let date = new Date();

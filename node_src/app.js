@@ -9,35 +9,44 @@ let mustacheExpress = require('mustache-express')
 
 app.engine("html", mustacheExpress())
 
-  app.set('view engine', 'html');
-  app.set('views', __dirname + '/views');
-  app.use(express.static(__dirname + '/public'));
+app.set('view engine', 'html');
+app.set('views', __dirname + '/views');
+app.use(express.static(__dirname + '/public'));
 
 //POKEMON
-app.get('/', function (req, res) {
-  let pokemonChosen1 = req.query.chooseYourPokemon1;                            //récupère le paramètre de requête pour le 1er pokemon
-  let pokemonChosen2 = req.query.chooseYourPokemon2;                            //récupère le paramètre de requête pour le 2e pokemon
+app.get('/', function(req, res) {
+  let pokemonChosen1 = req.query.chooseYourPokemon1; //récupère le paramètre de requête pour le 1er pokemon
+  let pokemonChosen2 = req.query.chooseYourPokemon2; //récupère le paramètre de requête pour le 2e pokemon
 
 
-  axios.get('https://pokeapi.co/api/v2/pokemon/' + pokemonChosen1)               //méthode d'appele d'axios pour le pokemon 1
-    .then((response) =>{
+  let promise1 = axios.get('https://pokeapi.co/api/v2/pokemon/' + pokemonChosen1) //méthode d'appele d'axios pour le pokemon 1
+    .then((response) => {
       // handle success
-      let pokemonData = response.data;                                          // récupère toutes les données du pokemon
-      let pokemonName = pokemonData.name                                        // récupère ne nom
-      let pokemonHP = pokemonData.stats[5].base_stat                            // récupère les HP
-      let pokemonATK = pokemonData.stats[4].base_stat                           // récupère l'ATK
-
-      res.json(pokemonHP);
+      let pokemonData = response.data; // récupère toutes les données du pokemon
+      let pokemonName = pokemonData.name // récupère ne nom
+      let pokemonHP = pokemonData.stats[5].base_stat // récupère les HP
+      let pokemonATK = pokemonData.stats[4].base_stat // récupère l'ATK
+      return pokemonData;
     })
     .catch((error) => {
       // handle error
       console.log(error);
     })
-    // .then(axios.get('https://pokeapi.co/api/v2/pokemon/' + pokemonChosen2))   //appel d'axios pour le pokemon 2
 
-
+  let promise2 = axios.get('https://pokeapi.co/api/v2/pokemon/' + pokemonChosen2)
+    .then(response => {
+    // handle success
+    let pokemonData = response.data; // récupère toutes les données du pokemon
+    let pokemonName = pokemonData.name // récupère ne nom
+    let pokemonHP = pokemonData.stats[5].base_stat // récupère les HP
+    let pokemonATK = pokemonData.stats[4].base_stat // récupère l'ATK
+    return pokemonData;
+  })
+  Promise.all([promise1, promise2]).then(response =>{
+    console.log(response);
+  });
+  console.log(promise1, promise2);
 })
-
 
 
 

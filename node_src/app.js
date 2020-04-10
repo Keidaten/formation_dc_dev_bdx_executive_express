@@ -53,6 +53,21 @@ app.get('/', function(req, res) {
 
 
 
+app.get('/test', (req, res) => {
+
+  let disBonjour= function bonjour(nom){
+      if (nom){
+          alert('Bonjour ' + nom);
+      }else{
+          bonjour('inconnu');
+      }
+  };
+
+
+  disBonjour('Jey');
+  disBonjour();
+
+})
 
 app.get('/calendar', (req, res) => {
   let date = new Date();
